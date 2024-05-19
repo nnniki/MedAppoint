@@ -1,0 +1,65 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #BFE7F9;
+    font-family: Arial, sans-serif;
+}
+
+ /* .registration-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; 
+}  */
+
+.registration-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+.registration-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.registration-form .form-group {
+    margin-bottom: 10px;
+}
+.registration-form input, #speciality {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.registration-form input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #41CC46;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+.registration-form input[type="submit"]:hover {
+    background-color: #45a049;
+}
+#container-logo {
+    display: flex;
+    width: 100%; 
+    height: 100%; 
+    justify-content: center;
+}
+#container-logo img {
+    width: 100px;
+    height: 100px;
+}
+.error {
+    color: red;
+    margin-bottom: 15px;
+    font-size: 12px;
+}
