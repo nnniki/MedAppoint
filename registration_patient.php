@@ -1,6 +1,6 @@
 <?php
 
-require_once 'bootstrap.php';
+// require_once 'bootstrap.php';
 // session_start();
 
 // if(isset($_SESSION['email'])) {
@@ -90,9 +90,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <form class="registration-form" action="./registration_patient.php" method="POST">
-      <div class="registration-container">
+    <div class="container-form">
+
         <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+
         <h2>Регистрация</h2>
+
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>">
@@ -142,8 +145,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="error"> <?php if(isset($errors["phone_number"])) { echo $errors["phone_number"];}?> </div>
 
-        <input type="submit" value="Регистрация">
-        
+        <div class="full-span">
+            <input type="submit" value="Регистрация">
+        </div>
+
+    </div>
     </form>
 
 </body>

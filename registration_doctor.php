@@ -1,6 +1,6 @@
 <?php
 
-require_once 'bootstrap.php';
+// require_once 'bootstrap.php';
 // session_start();
 
 // if(isset($_SESSION['email'])) {
@@ -92,14 +92,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <title>Patient Registration Form</title>
+    <title>Doctor Registration Form</title>
     <link rel="stylesheet" type="text/css" href="./css/registration.css">
 </head>
 <body>
     <form class="registration-form" action="./registration_patient.php" method="POST">
-   
+    <div class="container-form">
+
         <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+
         <h2>Регистрация</h2>
+
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>">
@@ -108,7 +111,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required value="<?php echo isset($_POST['password']) ? $_POST['password'] : ''; ?>">   
+            <input type="password" id="password" name="password" required value="<?php echo isset($_POST['password']) ? $_POST['password'] : ''; ?>">
         </div>
         <div class="error"> <?php if(isset($errors["password"])) { echo $errors["password"]; } ?> </div>
 
@@ -149,21 +152,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="error"> <?php if(isset($errors["phone_number"])) { echo $errors["phone_number"];}?> </div>
 
-        <div class="form-group">
-            <label for="speciality">Speciality</label>
+        <div class="full-span">
+            <label for="speciality">Speciality:</label>
             <select id="speciality" name="speciality" required>
-            <option value="кардиолог">кардиолог</option>
-            <option value="невролог">невролог</option>
-            <option value="УНГ">УНГ</option>
-            <option value="уролог">уролог</option>
-            <option value="гинеколог">гинеколог</option>
-            <option value="очен">очен</option>
-            <option value="кожен">кожен</option>
-        </select>
-     
+                <option value="кардиолог">кардиолог</option>
+                <option value="невролог">невролог</option>
+                <option value="УНГ">УНГ</option>
+                <option value="уролог">уролог</option>
+                <option value="гинеколог">гинеколог</option>
+                <option value="очен">очен</option>
+                <option value="кожен">кожен</option>
+            </select>
+        </div>
 
-        <input type="submit" value="Регистрация">
-        
+        <div class="full-span">
+            <input type="submit" value="Регистрация">
+        </div>
+
+    </div>
     </form>
 
 </body>
