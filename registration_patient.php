@@ -1,6 +1,6 @@
 <?php
 
-// require_once 'bootstrap.php';
+require_once 'DB.php';
 // session_start();
 
 // if(isset($_SESSION['email'])) {
@@ -14,13 +14,17 @@ function validate_registration_form(string $username, string $email, string $pas
 
     $errors = [];
 
-    // $query = 'SELECT * FROM users WHERE email = ?';
-    // $stmt = $connection->prepare($query);
-    // $result = $stmt->execute([$email]);
+    $validate_username = validate_patient_username($username);
 
-    // if($result && $stmt->rowCount() === 1) {
-    //     $errors[] = 'This email address already exists';
-    // }
+    if($validate_username->rowCount() >= 1) {
+        $errors['username'] = 'This username is invalid, please choose another one!';
+    }
+
+    $validate_email = validate_patient_email($email);
+
+    if($validate_email->rowCount() >= 1) {
+        $errors['email'] = 'This email is invalid, please choose another one!';
+    }
 
     // Validate username
     if (strlen($username) < 3 || strlen($username) > 20) {
@@ -62,22 +66,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $address = $_POST["address"];
     $phone_number = $_POST["phone_number"];
 
-    //include_once '../mysql/database.php';
-    //global $connection;
-
     $errors = validate_registration_form($username, $email, $password, $first_name, $last_name, $ucn, $address, $phone_number);
 
-    // if(count($errors) === 0) {
-    //     $email = $_POST['email'];
-    //     $password = sha1($_POST['password']);
+    if(count($errors) === 0) {
+        $password = sha1($_POST['password']);
 
-    //     $query = 'INSERT INTO users (email, password) VALUES (?, ?)';
-    //     $connection->prepare($query)->execute([$email, $password]);
+        create_patient($username, $password, $email, $first_name, $last_name, $ucn, $address, $phone_number);
 
-    //     $_SESSION['email'] = $email;
-
-    //     header('Location: home.php');
-    // }
+        $_SESSION['email'] = $email;
+        //header('Location: login_patients.php');
+    }
 }
 ?>
 
