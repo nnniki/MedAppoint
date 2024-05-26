@@ -1,7 +1,7 @@
 <?php
 
-require_once 'bootstrap.php';
-// session_start();
+require_once 'DB.php';
+session_start();
 
 // if(isset($_SESSION['email'])) {
 //     header('Location: home.php');
@@ -9,18 +9,19 @@ require_once 'bootstrap.php';
 
 function validate_registration_form(string $username, string $email, string $password, string $first_name, string $last_name, string $ucn, string $address, string $phone_number, string $speciality)
 {
-    // global $connection;
-    // include_once '../mysql/database.php';
-
     $errors = [];
 
-    // $query = 'SELECT * FROM users WHERE email = ?';
-    // $stmt = $connection->prepare($query);
-    // $result = $stmt->execute([$email]);
+    $validate_username = validate_username($username, 'doctors');
 
-    // if($result && $stmt->rowCount() === 1) {
-    //     $errors[] = 'This email address already exists';
-    // }
+    if($validate_username) {
+        $errors['username'] = 'This username is invalid, please choose another one!';
+    }
+
+    $validate_email = validate_email($email, 'doctors');
+
+    if($validate_email) {
+        $errors['email'] = 'This email is invalid, please choose another one!';
+    }
 
     // Validate username
     if (strlen($username) < 3 || strlen($username) > 20) {
@@ -69,22 +70,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone_number = $_POST["phone_number"];
     $speciality = $_POST["speciality"];
 
-    //include_once '../mysql/database.php';
-    //global $connection;
-
     $errors = validate_registration_form($username, $email, $password, $first_name, $last_name, $ucn, $address, $phone_number, $speciality);
 
-    // if(count($errors) === 0) {
-    //     $email = $_POST['email'];
-    //     $password = sha1($_POST['password']);
+     if(count($errors) === 0) {
+         $password = sha1($_POST['password']);
 
-    //     $query = 'INSERT INTO users (email, password) VALUES (?, ?)';
-    //     $connection->prepare($query)->execute([$email, $password]);
+         create_doctor($username, $password, $email, $first_name, $last_name, $ucn, $address, $phone_number, $speciality);
 
-    //     $_SESSION['email'] = $email;
 
-    //     header('Location: home.php');
-    // }
+//        $_SESSION['email'] = $email;
+         header('Location: login_doctors.php');
+     }
 }
 ?>
 
@@ -96,7 +92,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" type="text/css" href="./css/registration.css">
 </head>
 <body>
-    <form class="registration-form" action="./registration_patient.php" method="POST">
+    <form class="registration-form" action="./registration_doctor.php" method="POST">
     <div class="container-form">
 
         <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>

@@ -1,28 +1,25 @@
 <?php
 
 require_once 'DB.php';
-// session_start();
+session_start();
 
 // if(isset($_SESSION['email'])) {
-//     header('Location: home.php');
+//     header('Location: login_patients.php');
 // }
 
 function validate_registration_form(string $username, string $email, string $password, string $first_name, string $last_name, string $ucn, string $address, string $phone_number)
 {
-    // global $connection;
-    // include_once '../mysql/database.php';
-
     $errors = [];
 
-    $validate_username = validate_patient_username($username);
+    $validate_username = validate_username($username, 'patients');
 
-    if($validate_username->rowCount() >= 1) {
+    if($validate_username) {
         $errors['username'] = 'This username is invalid, please choose another one!';
     }
 
-    $validate_email = validate_patient_email($email);
+    $validate_email = validate_email($email, 'patients');
 
-    if($validate_email->rowCount() >= 1) {
+    if($validate_email) {
         $errors['email'] = 'This email is invalid, please choose another one!';
     }
 
@@ -73,8 +70,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         create_patient($username, $password, $email, $first_name, $last_name, $ucn, $address, $phone_number);
 
-        $_SESSION['email'] = $email;
-        //header('Location: login_patients.php');
+//        $_SESSION['email'] = $email;
+        header('Location: login_patients.php');
     }
 }
 ?>
