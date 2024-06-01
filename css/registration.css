@@ -56,9 +56,11 @@ body {
     color: white;
     font-size: 16px;
     cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 .registration-form input[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #ccc;
+    color: black;
 }
 .error {
     color: red;

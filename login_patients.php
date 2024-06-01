@@ -4,7 +4,7 @@ require_once 'DB.php';
 session_start();
 
 //if(isset($_SESSION['email'])) {
-//    header('Location: home.php');
+//    header('Location: homepage.php');
 //    exit;
 //}
 
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if($result) {
 //        $_SESSION['username'] = $username;
-        header('Location: homepage.php');
+        header('Location: homepage_logged.php');
         exit;
     }
 

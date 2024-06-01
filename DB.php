@@ -5,13 +5,24 @@ class Db
 
     public function __construct()
     {
-        $dbhost = "localhost";
-        $port = 3307;
+//        $dbhost = "localhost";
+//        $port = 3307;
+//        $dbName = "medappoint";
+//        $userName = "root";
+//        $userPassword = "";
+//
+//        $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
+//            [
+//                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+//                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+//            ]);
+
+        $dbhost = "mysql";
         $dbName = "medappoint";
         $userName = "root";
-        $userPassword = "";
+        $userPassword = "root";
 
-        $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
+        $this->connection = new PDO("mysql:host=$dbhost;dbname=$dbName", $userName, $userPassword,
             [
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -105,26 +116,22 @@ function getDoctorsInformation($searchName, $searchRegion, $searchSpeciality) {
     if (!empty($searchName)) {
         $sql .= " AND CONCAT(first_name,' ',last_name) LIKE ?";
         $keyword = '%' . $searchName . '%';
-
         $params[] = $keyword;
     }
 
     if (!empty($searchSpeciality)) {
-        $sql .= " AND speciality LIKE ?";
-        $keyword = '%' . $searchSpeciality . '%';
-        $params[] = $keyword;
+        $sql .= " AND speciality = ?";
+        $params[] = $searchSpeciality;
     }
 
     if (!empty($searchRegion)) {
-        $sql .= " AND region LIKE ?";
-        $keyword = '%' . $searchRegion . '%';
-        $params[] = $keyword;
+        $sql .= " AND region = ?";
+        $params[] = $searchRegion;
     } 
     
     $stmt = $dataBase->getConnection()->prepare($sql);
     $stmt->execute($params);
     $doctors = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 
     return $doctors;
 }

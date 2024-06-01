@@ -18,7 +18,7 @@
     </header>
 
     <main>
-        <form action="./homepage.php" method="GET">
+        <form class="search-filter" action="./homepage.php" method="GET">
             <div class="search-bar">
                 <input type="text" placeholder="Search" name="name">
                 <select class="filter-dropdown" name="speciality">
