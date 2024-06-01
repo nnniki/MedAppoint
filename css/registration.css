@@ -37,7 +37,7 @@ body {
 .registration-form .form-group, .full-span {
     margin-bottom: 10px;
 }
-.registration-form input, #speciality {
+.registration-form input, #speciality, #region {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;

@@ -1,11 +1,92 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Homepage</title>
-    <link rel="stylesheet" type="text/css" href="./css/registration.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAppoint</title>
+    <link rel="stylesheet" href="css/homepage.css">
 </head>
 <body>
-    <h2>Влязохте в профила си!</h2>
+    <header>
+        <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+        <div class="container-buttons">
+            <a href="registration_patient.php"> <button class="user-buttons">Sign up User</button> </a>
+            <a href="login_patients.php"><button class="user-buttons">Log in User</button></a>
+            <a href="registration_doctor.php"><button class="doctor-buttons">Sign up Doctor</button></a>
+            <a href="login_doctors.php"><button class="doctor-buttons">Log in Doctor</button></a>
+        </div>
+    </header>
+
+    <main>
+        <form action="./homepage.php" method="GET">
+            <div class="search-bar">
+                <input type="text" placeholder="Search" name="name">
+                <select class="filter-dropdown" name="speciality">
+                    <option value="" disabled selected>Специалност</option>
+                    <option value="кардиолог">кардиолог</option>
+                    <option value="кожен">кожен</option>
+                    <option value="УНГ">УНГ</option>
+                    <option value="очен">очен</option>
+                    <option value="гинеколог">гинеколог</option>
+                    <option value="невролог">невролог</option>
+                </select>
+                <select class="filter-dropdown" name="region">
+                    <option value="" disabled selected>Регион</option>
+                    <option value="София">София</option>
+                    <option value="Бургас">Бургас</option>
+                    <option value="Варна">Варна</option>
+                    <option value="Пловдив">Пловдив</option>
+                </select>
+                <button class="search-button">Search</button>
+            </div>
+        </form>
+        </div>
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Doctors</th>
+                    <th>Specialty</th>
+                    <th>Region</th>
+                    <th>Rating</th>
+                    <th>Reviews</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+                require_once 'DB.php';
+                $searchName = "";
+                $searchRegion = "";
+                $searchSpeciality = "";
+
+                if ($_SERVER['REQUEST_METHOD'] === 'GET') {              
+                    if (isset($_GET['name'])) {
+                        $searchName = $_GET['name'];
+                    }
+                    if (isset($_GET['speciality'])) {
+                        $searchSpeciality = $_GET['speciality'];
+                    }
+                    if (isset($_GET['region'])) {
+                        $searchRegion = $_GET['region'];
+                    }
+                }
+                $doctors = getDoctorsInformation($searchName, $searchRegion, $searchSpeciality);
+
+                if (count($doctors) > 0) {
+                    foreach ($doctors as $row) {
+                        echo "<tr>";
+                        echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
+                        echo "<td>" . $row["speciality"] . "</td>";
+                        echo "<td>" . $row["region"] . "</td>";
+                        // echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
+                        // echo "<td><button class='reviews-button'>Open reviews (" . $row["reviews_count"] . ")</button></td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='5'>No doctors found</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </main>
 </body>
 </html>

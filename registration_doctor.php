@@ -7,7 +7,7 @@ session_start();
 //     header('Location: home.php');
 // }
 
-function validate_registration_form(string $username, string $email, string $password, string $first_name, string $last_name, string $ucn, string $address, string $phone_number, string $speciality)
+function validate_registration_form(string $username, string $email, string $password, string $first_name, string $last_name, string $ucn, string $address, string $region, string $phone_number, string $speciality)
 {
     $errors = [];
 
@@ -54,6 +54,11 @@ function validate_registration_form(string $username, string $email, string $pas
     if (!in_array($speciality, $valid_specialities)) {
         $errors["speciality"] = "Невалидна специалност. Моля избери някой измежду " . $valid_specialities;
     }
+
+    $valid_regions = array("София", "Бургас", "Варна", "Пловдив");
+    if (!in_array($speciality, $valid_specialities)) {
+        $errors["region"] = "Невалиден регион. Моля избери някой измежду " . $valid_regions;
+    }
     
     return $errors;
 }
@@ -67,15 +72,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $last_name = $_POST["last_name"];
     $ucn = $_POST["ucn"];
     $address = $_POST["address"];
+    $region = $_POST["region"];
     $phone_number = $_POST["phone_number"];
     $speciality = $_POST["speciality"];
 
-    $errors = validate_registration_form($username, $email, $password, $first_name, $last_name, $ucn, $address, $phone_number, $speciality);
+    $errors = validate_registration_form($username, $email, $password, $first_name, $last_name, $ucn, $address, $region, $phone_number, $speciality);
 
      if(count($errors) === 0) {
          $password = sha1($_POST['password']);
 
-         create_doctor($username, $password, $email, $first_name, $last_name, $ucn, $address, $phone_number, $speciality);
+         create_doctor($username, $password, $email, $first_name, $last_name, $ucn, $address, $region, $phone_number, $speciality);
 
 
 //        $_SESSION['email'] = $email;
@@ -141,7 +147,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="error"> <?php if(isset($errors["address"])) { echo $errors["address"]; } ?> </div>
 
-
         <div class="form-group">
             <label for="phone_number">Phone Number:</label>
             <input type="tel" id="phone_number" name="phone_number" required value="<?php echo isset($_POST['phone_number']) ? $_POST['phone_number'] : ''; ?>">
@@ -160,6 +165,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="кожен">кожен</option>
             </select>
         </div>
+        <div class="error"> <?php if(isset($errors["speciality"])) { echo $errors["speciality"];}?> </div>
+
+        <div class="full-span">
+            <label for="region">Region:</label>
+            <select id="region" name="region" required>
+                <option value="София">София</option>
+                <option value="Бургас">Бургас</option>
+                <option value="Варна">Варна</option>
+                <option value="Пловдив">Пловдив</option>
+            </select>
+        </div>
+        <div class="error"> <?php if(isset($errors["region"])) { echo $errors["region"];}?> </div>
 
         <div class="full-span">
             <input type="submit" value="Регистрация">
