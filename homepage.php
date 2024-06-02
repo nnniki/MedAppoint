@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+
+if(isset($_SESSION['username'])) {
+    if($_SESSION['role'] === "doctor") {
+        header('Location: homepage_doctors.php');
+    } else if ($_SESSION['role'] === "patient") {
+        header('Location: homepage_patients.php');
+    }
+
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +55,7 @@
                 <button class="search-button">Search</button>
             </div>
         </form>
-        </div>
+        
         <table class="results-table">
             <thead>
                 <tr>

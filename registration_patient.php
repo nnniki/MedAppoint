@@ -3,9 +3,14 @@
 require_once 'DB.php';
 session_start();
 
-// if(isset($_SESSION['email'])) {
-//     header('Location: homepage.php');
-// }
+if(isset($_SESSION['username'])) {
+    if($_SESSION['role'] === "doctor") {
+        header('Location: homepage_doctors.php');
+    } else if ($_SESSION['role'] === "patient") {
+        header('Location: homepage_patients.php');
+    }
+    exit;
+}
 
 function validate_registration_form(string $username, string $email, string $password, string $first_name, string $last_name, string $ucn, string $address, string $phone_number)
 {
@@ -70,8 +75,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         create_patient($username, $password, $email, $first_name, $last_name, $ucn, $address, $phone_number);
 
-//        $_SESSION['email'] = $email;
-        header('Location: homepage_logged.php');
+       $_SESSION['username'] = $username;
+       $_SESSION['role'] = "patient";
+        header('Location: homepage_patients.php');
     }
 }
 ?>

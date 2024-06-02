@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
+ 
+    header('Location: homepage_doctors.php');
+     exit;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,10 +20,13 @@
 <body>
 <header>
     <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+    <div class="container-buttons">
+            <a href="logout.php"> <button class="user-buttons">Logout</button> </a>
+    </div>
 </header>
 
 <main>
-    <form class="search-filter" action="./homepage_logged.php" method="GET">
+    <form class="search-filter" action="./homepage_patients.php" method="GET">
         <div class="search-bar">
             <input type="text" placeholder="Search" name="name">
             <select class="filter-dropdown" name="speciality">
@@ -34,7 +48,7 @@
             <button class="search-button">Search</button>
         </div>
     </form>
-    </div>
+    
     <table class="results-table">
         <thead>
         <tr>

@@ -3,10 +3,15 @@
 require_once 'DB.php';
 session_start();
 
-//if(isset($_SESSION['email'])) {
-//    header('Location: homepage.php');
-//    exit;
-//}
+if(isset($_SESSION['username'])) {
+    if($_SESSION['role'] === "doctor") {
+        header('Location: homepage_doctors.php');
+    } else if ($_SESSION['role'] === "patient") {
+        header('Location: homepage_patients.php');
+    }
+
+    exit;
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -15,8 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = login($username, $password, 'doctors');
 
     if($result) {
-//        $_SESSION['username'] = $username;
-        header('Location: homepage_logged.php');
+        $_SESSION['username'] = $username;
+        $_SESSION['role'] = "doctor";
+        header('Location: homepage_doctors.php');
         exit;
     }
 

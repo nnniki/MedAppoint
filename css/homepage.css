@@ -129,6 +129,10 @@ header {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+main {
+    margin-top: 20px;
+}
+
 .results-table th, .results-table td {
     padding: 8px;
     text-align: left;
