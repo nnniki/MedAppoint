@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (isset($row["notes"])) {
                     echo "<td>" . $row["notes"] . "</td>";
                 } else {
-                    echo '<td>
+                    echo '<td id="note-container-' . $row['id'] . '" >
                         <form class="note-form" onsubmit="addNote(event, ' . $row['id'] . ')">
                             <input type="text" class="note-input" id="note-input-' . $row['id'] . '" required>
                             <button type="submit" class="note-button">Добави бележка</button>

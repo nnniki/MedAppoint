@@ -13,6 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':id', $appointment_id);
 
     $stmt->execute();
-//    header("Refresh:0; url=homepage_doctors.php");
+    return $note;
 }
 ?>
