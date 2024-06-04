@@ -5,28 +5,28 @@ class Db
 
     public function __construct()
     {
-       $dbhost = "localhost";
-       $port = 3307;
-       $dbName = "medappoint";
-       $userName = "root";
-       $userPassword = "";
+//       $dbhost = "localhost";
+//       $port = 3307;
+//       $dbName = "medappoint";
+//       $userName = "root";
+//       $userPassword = "";
+//
+//       $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
+//           [
+//               PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+//               PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+//           ]);
 
-       $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
-           [
-               PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-               PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-           ]);
+         $dbhost = "mysql";
+         $dbName = "medappoint";
+         $userName = "root";
+         $userPassword = "root";
 
-        // $dbhost = "mysql";
-        // $dbName = "medappoint";
-        // $userName = "root";
-        // $userPassword = "root";
-
-        // $this->connection = new PDO("mysql:host=$dbhost;dbname=$dbName", $userName, $userPassword,
-        //     [
-        //         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-        //         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        //     ]);
+         $this->connection = new PDO("mysql:host=$dbhost;dbname=$dbName", $userName, $userPassword,
+             [
+                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+             ]);
     }
 
     public function getConnection()
@@ -110,7 +110,7 @@ function login($username, $password, $table) {
 
 function getDoctorsInformation($searchName, $searchRegion, $searchSpeciality) {
     $dataBase = new Db();
-    $sql = "SELECT first_name, last_name, speciality, region FROM doctors WHERE 1=1";
+    $sql = "SELECT id, first_name, last_name, speciality, region FROM doctors WHERE 1=1";
 
     $params = [];
     if (!empty($searchName)) {
@@ -136,15 +136,81 @@ function getDoctorsInformation($searchName, $searchRegion, $searchSpeciality) {
     return $doctors;
 }
 
-function getAppointmentsPerDoctor($username) {
+function getAverageRatingPerDoctor($id) {
     $dataBase = new Db();
-    $sql = "SELECT doctors.username, patients.first_name, patients.last_name, review, rating, notes, location, appointment_date
+    $sql = "SELECT AVG(appointments.rating) AS rating
+    FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
+    WHERE doctor_id = :id";
+
+    $stmt =  $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':id', $id);
+
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $rating = $result['rating'];
+
+    return round($rating);
+}
+
+function getReservedAppointmentsPerDoctor($username) {
+    $dataBase = new Db();
+    $sql = "SELECT doctors.username, patients.first_name, patients.last_name, review, rating, notes, location, appointment_date, appointments.id
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
     JOIN patients ON patients.id = appointments.patient_id
     WHERE doctors.username = :username";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
+
+    $stmt->execute();
+    $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $appointments;
+}
+
+function getFreeAppointmentsPerDoctor($username) {
+    $dataBase = new Db();
+    $sql = "SELECT doctors.username, location, appointment_date
+    FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
+    WHERE doctors.username = :username AND patient_id IS NULL";
+
+    $stmt =  $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':username', $username);
+
+    $stmt->execute();
+    $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $appointments;
+}
+
+function addNewAppointment($username, $location, $dataTime) {
+    $dataBase = new Db();
+    $doctor_id = "SELECT id FROM doctors WHERE username = :username";
+
+    $stmt = $dataBase->getConnection()->prepare($doctor_id);
+    $stmt->bindParam(':username', $username);
+
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $doctor_id = $result['id'];
+
+    $sql = 'INSERT INTO appointments(doctor_id, location, appointment_date)
+            VALUES (:doctor_id, :location, :dateTime)';
+
+    $stmt = $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':doctor_id', $doctor_id);
+    $stmt->bindParam(':location', $location);
+    $stmt->bindParam(':dateTime', $dataTime);
+
+    $stmt->execute();
+}
+
+function getFreeAppointments() {
+    $dataBase = new Db();
+    $sql = "SELECT first_name, last_name, review, rating, notes, location, appointment_date
+    FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id";
+
+    $stmt =  $dataBase->getConnection()->prepare($sql);
 
     $stmt->execute();
     $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);

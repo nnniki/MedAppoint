@@ -19,39 +19,39 @@ function validate_registration_form(string $username, string $email, string $pas
     $validate_username = validate_username($username, 'patients');
 
     if($validate_username) {
-        $errors['username'] = 'This username is invalid, please choose another one!';
+        $errors['username'] = 'Това потребителско име е заето, изберете друго.';
     }
 
     $validate_email = validate_email($email, 'patients');
 
     if($validate_email) {
-        $errors['email'] = 'This email is invalid, please choose another one!';
+        $errors['email'] = 'Този имейл е зает, изберете друг.';
     }
 
     // Validate username
     if (strlen($username) < 3 || strlen($username) > 20) {
-        $errors['username'] = "Username must be between 3 and 20 characters.";  
+        $errors['username'] = "Потребителското име трябва да бъде между 3 и 20 символа.";
     }
 
     // Validate password
-    $password_pattern = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/";
+    $password_pattern = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&*]).{8,}$/";
     if (!preg_match($password_pattern, $password)) {
-        $errors['password'] = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character (@, #, $, %, &, *).";
+        $errors['password'] = "Паролата трябва да бъде поне 8 символа,да съдържа поне една голяма и една малка буква, цифра, и един специален символ (@, #, $, %, &, *).";
     }
 
     // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = "Email must be in the format: example@example.com.";
+        $errors['email'] = "Имейлът трябва да бъде в следния формат: example@example.com.";
     }
 
     // Validate UCN
     if (!preg_match("/^\d{10}$/", $ucn)) {
-        $errors['ucn'] = "UCN must be exactly 10 digits.";
+        $errors['ucn'] = "ЕГН-то трябва да бъде точно 10 символа.";
     }
 
     // Validate phone number
     if (!preg_match("/^\d{10}$/", $phone_number)) {
-        $errors['phone_number'] = "Phone number must be exactly 10 digits.";
+        $errors['phone_number'] = "Телефонният номер трябва да бъде точно 10 символа.";
     }
     
     return $errors;
@@ -98,52 +98,49 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Регистрация</h2>
 
             <div class="form-group">
-                <label for="username">Username:</label>
+                <label for="username">Потребителско име:</label>
                 <input type="text" id="username" name="username" required value="<?php echo isset($_POST['username']) ? $_POST['username'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["username"])) { echo 'Username is invalid.'; } ?> </div>
+            <div class="error"> <?php if(isset($errors["username"])) { echo 'Потребителското име е невалидно.'; } ?> </div>
 
             <div class="form-group">
-                <label for="first_name">First Name:</label>
+                <label for="first_name">Име:</label>
                 <input type="text" id="first_name" name="first_name" required value="<?php echo isset($_POST['first_name']) ? $_POST['first_name'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["first_name"])) { echo 'First name is invalid.';}?> </div>
 
             <div class="form-group">
-                <label for="email">Email:</label>
+                <label for="email">Имейл:</label>
                 <input type="email" id="email" name="email" required value="<?php echo isset($_POST['email']) ? $_POST['email'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["email"])) { echo 'Email is invalid.'; } ?> </div>
+            <div class="error"> <?php if(isset($errors["email"])) { echo 'Имейлът е невалиден.'; } ?> </div>
 
             <div class="form-group">
-                <label for="ucn">UCN:</label>
+                <label for="ucn">ЕГН:</label>
                 <input type="text" id="ucn" name="ucn" required value="<?php echo isset($_POST['ucn']) ? $_POST['ucn'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["ucn"])) { echo 'UCN is invalid.'; } ?> </div>
+            <div class="error"> <?php if(isset($errors["ucn"])) { echo 'ЕГН-то е невалидно.'; } ?> </div>
 
             <div class="form-group">
-                <label for="password">Password:</label>
+                <label for="password">Парола:</label>
                 <input type="password" id="password" name="password" required value="<?php echo isset($_POST['password']) ? $_POST['password'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["password"])) { echo 'Password is invalid.'; } ?> </div>
+            <div class="error"> <?php if(isset($errors["password"])) { echo 'Паролата е невалидна.'; } ?> </div>
 
             <div class="form-group">
-                <label for="last_name">Last Name:</label>
+                <label for="last_name">Фамилия:</label>
                 <input type="text" id="last_name" name="last_name" required value="<?php echo isset($_POST['last_name']) ? $_POST['last_name'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["last_name"])) { echo 'Last name is invalid.'; } ?> </div>
 
             <div class="form-group">
-                <label for="phone_number">Phone Number:</label>
+                <label for="phone_number">Телефонен номер:</label>
                 <input type="tel" id="phone_number" name="phone_number" required value="<?php echo isset($_POST['phone_number']) ? $_POST['phone_number'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["phone_number"])) { echo 'Phone number is invalid.';}?> </div>
+            <div class="error"> <?php if(isset($errors["phone_number"])) { echo 'Тел. номер е невалиден.';}?> </div>
 
             <div class="form-group">
-                <label for="address">Address:</label>
+                <label for="address">Адрес:</label>
                 <input type="text" id="address" name="address" required value="<?php echo isset($_POST['address']) ? $_POST['address'] : ''; ?>">
             </div>
-            <div class="error"> <?php if(isset($errors["address"])) { echo 'Address is invalid.'; } ?> </div>
 
             <div class="full-span">
                 <?php

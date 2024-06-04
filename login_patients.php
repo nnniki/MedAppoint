@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $error = 'Wrong email or password!';
+    $error = 'Грешно потребителско име или парола!';
 }
 
 ?>
@@ -47,26 +47,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Вход</h2>
 
         <div class="form-group">
-            <label for="username">Username:</label>
+            <label for="username">Потребителско име:</label>
             <input type="text" id="username" name="username" required>
         </div>
 
         <div class="form-group">
-            <label for="password">Password:</label>
+            <label for="password">Парола:</label>
             <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="full-span">
+            <?php
+
+            if(isset($error)) {
+                echo '<div class="error">' . $error . '</div>';
+            }
+
+            ?>
         </div>
 
         <div class="full-span">
             <input type="submit" value="Вход">
         </div>
-
-        <?php
-
-        if(isset($error)) {
-            echo '<div class="error">' . $error . '</div>';
-        }
-
-        ?>
 
     </div>
 </form>

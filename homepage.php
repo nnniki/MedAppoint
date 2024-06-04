@@ -25,18 +25,18 @@ if(isset($_SESSION['username'])) {
     <header>
         <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
         <div class="container-buttons">
-            <a href="registration_patient.php"> <button class="user-buttons">Sign up User</button> </a>
-            <a href="login_patients.php"><button class="user-buttons">Log in User</button></a>
-            <a href="registration_doctor.php"><button class="doctor-buttons">Sign up Doctor</button></a>
-            <a href="login_doctors.php"><button class="doctor-buttons">Log in Doctor</button></a>
+            <a href="registration_patient.php"> <button class="user-buttons">Регистрация за пациент</button> </a>
+            <a href="login_patients.php"><button class="user-buttons">Вход за пациент</button></a>
+            <a href="registration_doctor.php"><button class="doctor-buttons">Регистрация за доктор</button></a>
+            <a href="login_doctors.php"><button class="doctor-buttons">Вход за доктор</button></a>
         </div>
     </header>
 
     <main>
-        <form class="search-filter" action="./homepage.php" method="GET">
+        <form action="./homepage.php" method="GET">
             <div class="search-bar">
-                <input type="text" placeholder="Search" name="name">
-                <select class="filter-dropdown" name="speciality">
+                <input type="text" placeholder="Търсене" name="name">
+                <select name="speciality">
                     <option value="" disabled selected>Специалност</option>
                     <option value="кардиолог">кардиолог</option>
                     <option value="кожен">кожен</option>
@@ -45,25 +45,25 @@ if(isset($_SESSION['username'])) {
                     <option value="гинеколог">гинеколог</option>
                     <option value="невролог">невролог</option>
                 </select>
-                <select class="filter-dropdown" name="region">
+                <select name="region">
                     <option value="" disabled selected>Регион</option>
                     <option value="София">София</option>
                     <option value="Бургас">Бургас</option>
                     <option value="Варна">Варна</option>
                     <option value="Пловдив">Пловдив</option>
                 </select>
-                <button class="search-button">Search</button>
+                <button class="search-button">Търсене</button>
             </div>
         </form>
         
-        <table class="results-table">
+        <table class="results-table" id="results">
             <thead>
                 <tr>
-                    <th>Doctors</th>
-                    <th>Specialty</th>
-                    <th>Region</th>
-                    <th>Rating</th>
-                    <th>Reviews</th>
+                    <th>Доктор</th>
+                    <th>Специалност</th>
+                    <th>Регион</th>
+                    <th>Рейтинг</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -92,12 +92,17 @@ if(isset($_SESSION['username'])) {
                         echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
                         echo "<td>" . $row["speciality"] . "</td>";
                         echo "<td>" . $row["region"] . "</td>";
-                        // echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
-                        // echo "<td><button class='reviews-button'>Open reviews (" . $row["reviews_count"] . ")</button></td>";
+                        $doctors_rating = getAverageRatingPerDoctor($row['id']);
+                        if (!isset($doctors_rating)) {
+                            echo "<td></td>";
+                        } else {
+                            echo "<td><span class='stars'>" . str_repeat("★", $doctors_rating) . str_repeat("☆", 5 - $doctors_rating) . "</span></td>";
+                        }
+                        echo "<td><button class='reviews-button'>Виж профил</button></td>";
                         echo "</tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='5'>No doctors found</td></tr>";
+                    echo "<tr><td colspan='5'>Няма намерени доктори.</td></tr>";
                 }
                 ?>
             </tbody>

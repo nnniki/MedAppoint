@@ -1,11 +1,14 @@
 <?php
 session_start();
 
-if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
- 
+if(!isset($_SESSION['username'])) {
+    header('Location: homepage.php');
+    exit;
+} else if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
     header('Location: homepage_doctors.php');
      exit;
 }
+
 ?>
 
 
@@ -21,15 +24,15 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
 <header>
     <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
     <div class="container-buttons">
-            <a href="logout.php"> <button class="user-buttons">Logout</button> </a>
+            <a href="logout.php"> <button class="user-buttons">Излизане</button> </a>
     </div>
 </header>
 
 <main>
-    <form class="search-filter" action="./homepage_patients.php" method="GET">
+    <form action="./homepage_patients.php" method="GET">
         <div class="search-bar">
-            <input type="text" placeholder="Search" name="name">
-            <select class="filter-dropdown" name="speciality">
+            <input type="text" placeholder="Търсене" name="name">
+            <select name="speciality">
                 <option value="" disabled selected>Специалност</option>
                 <option value="кардиолог">кардиолог</option>
                 <option value="кожен">кожен</option>
@@ -38,25 +41,25 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
                 <option value="гинеколог">гинеколог</option>
                 <option value="невролог">невролог</option>
             </select>
-            <select class="filter-dropdown" name="region">
+            <select name="region">
                 <option value="" disabled selected>Регион</option>
                 <option value="София">София</option>
                 <option value="Бургас">Бургас</option>
                 <option value="Варна">Варна</option>
                 <option value="Пловдив">Пловдив</option>
             </select>
-            <button class="search-button">Search</button>
+            <button class="search-button">Търсене</button>
         </div>
     </form>
     
-    <table class="results-table">
+    <table class="results-table" id="results">
         <thead>
         <tr>
-            <th>Doctors</th>
-            <th>Specialty</th>
-            <th>Region</th>
-            <th>Rating</th>
-            <th>Reviews</th>
+            <th>Доктор</th>
+            <th>Специалност</th>
+            <th>Регион</th>
+            <th>Рейтинг</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -85,12 +88,46 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
                 echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
                 echo "<td>" . $row["speciality"] . "</td>";
                 echo "<td>" . $row["region"] . "</td>";
-                // echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
-                // echo "<td><button class='reviews-button'>Open reviews (" . $row["reviews_count"] . ")</button></td>";
+                $doctors_rating = getAverageRatingPerDoctor($row['id']);
+                if (!isset($doctors_rating)) {
+                    echo "<td></td>";
+                } else {
+                    echo "<td><span class='stars'>" . str_repeat("★", $doctors_rating) . str_repeat("☆", 5 - $doctors_rating) . "</span></td>";
+                }
+                echo "<td><button class='reviews-button'>Запази час</button></td>";
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='5'>No doctors found</td></tr>";
+            echo "<tr><td colspan='5'>Няма намерени доктори.</td></tr>";
+        }
+        ?>
+        </tbody>
+    </table>
+
+    <table class="results-table">
+        <thead>
+        <tr>
+            <th>Доктор</th>
+            <th>Локация</th>
+            <th>Дата и час</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        require_once 'DB.php';
+
+        $appointments = getFreeAppointments();
+
+        if (count($appointments) > 0) {
+            foreach ($appointments as $row) {
+                echo "<tr>";
+                echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
+                echo "<td>" . $row["location"] . "</td>";
+                echo "<td>" . $row["appointment_date"] . "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='5'>Няма намерени часове.</td></tr>";
         }
         ?>
         </tbody>

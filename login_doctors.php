@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $error = 'Wrong email or password!';
+    $error = 'Грешно потребителско име или парола!';
 }
 
 ?>
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Patient Registration Form</title>
-    <link rel="stylesheet" type="text/css" href="./css/registration.css">
+    <link rel="stylesheet" type="text/css" href="css/registration.css">
 </head>
 <body>
 <form class="registration-form" action="./login_doctors.php" method="POST">
@@ -47,19 +47,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Вход</h2>
 
         <div class="form-group">
-            <label for="username">Username:</label>
+            <label for="username">Потребителско име:</label>
             <input type="text" id="username" name="username" required>
         </div>
 
         <div class="form-group">
-            <label for="password">Password:</label>
+            <label for="password">Парола:</label>
             <input type="password" id="password" name="password" required>
         </div>
 
         <div class="full-span">
-            <input type="submit" value="Вход">
-        </div>
-
         <?php
 
         if(isset($error)) {
@@ -67,6 +64,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         ?>
+        </div>
+
+        <div class="full-span">
+            <input type="submit" value="Вход">
+        </div>
 
     </div>
 </form>
