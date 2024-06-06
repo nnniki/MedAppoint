@@ -54,13 +54,16 @@ if(!isset($_SESSION['username'])) {
     
     <table class="results-table" id="results">
         <thead>
-        <tr>
-            <th>Доктор</th>
-            <th>Специалност</th>
-            <th>Регион</th>
-            <th>Рейтинг</th>
-            <th></th>
-        </tr>
+            <tr>
+                <th>Резултати от търсенето:</th>
+            </tr>
+            <tr>
+                <th>Доктор</th>
+                <th>Специалност</th>
+                <th>Регион</th>
+                <th>Рейтинг</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
         <?php
@@ -94,40 +97,11 @@ if(!isset($_SESSION['username'])) {
                 } else {
                     echo "<td><span class='stars'>" . str_repeat("★", $doctors_rating) . str_repeat("☆", 5 - $doctors_rating) . "</span></td>";
                 }
-                echo "<td><button class='reviews-button'>Запази час</button></td>";
+                echo "<td><a href='doctor_profile.php?id=". $row['id'] ."'> <button class='reviews-button'>Запази час</button> </a></td>";
                 echo "</tr>";
             }
         } else {
             echo "<tr><td colspan='5'>Няма намерени доктори.</td></tr>";
-        }
-        ?>
-        </tbody>
-    </table>
-
-    <table class="results-table">
-        <thead>
-        <tr>
-            <th>Доктор</th>
-            <th>Локация</th>
-            <th>Дата и час</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        require_once 'DB.php';
-
-        $appointments = getFreeAppointments();
-
-        if (count($appointments) > 0) {
-            foreach ($appointments as $row) {
-                echo "<tr>";
-                echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
-                echo "<td>" . $row["location"] . "</td>";
-                echo "<td>" . $row["appointment_date"] . "</td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "<tr><td colspan='5'>Няма намерени часове.</td></tr>";
         }
         ?>
         </tbody>

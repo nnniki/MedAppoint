@@ -1,0 +1,100 @@
+<?php
+session_start();
+
+//if(!isset($_SESSION['username'])) {
+//    header('Location: homepage.php');
+//    exit;
+//} else if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
+//    header('Location: homepage_doctors.php');
+//    exit;
+//}
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAppoint</title>
+    <link rel="stylesheet" href="css/homepage.css">
+</head>
+<body>
+<header>
+    <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+<!--    <div class="container-buttons">-->
+<!--        <a href="logout.php"> <button class="user-buttons">Излизане</button> </a>-->
+<!--    </div>-->
+</header>
+
+<main>
+    <div class="container-appointments">
+
+        <div class="doctor-card">
+            <h2>Информация за доктора</h2>
+            <div class="doctor-info">
+                <?php
+                require_once 'DB.php';
+                $doctor = getDoctorInformation($_GET['id']);
+
+                echo "<div class='info-item'>
+                        <label>Име:</label>
+                        <span id='doctor-name'>" . $doctor["first_name"] . " " . $doctor["last_name"] . "</span>
+                    </div>";
+                echo "<div class='info-item'>
+                        <label>Специалност:</label>
+                        <span id='doctor-specialty'>" . $doctor["speciality"] . "</span>
+                    </div>";
+                echo "<div class='info-item'>
+                        <label>Регион:</label>
+                        <span id='doctor-address'>" . $doctor["region"] . "</span>
+                </div>";
+                $doctors_rating = getAverageRatingPerDoctor($_GET['id']);
+                echo "<div class='info-item'><label>Рейтинг:</label>";
+                if (!isset($doctors_rating)) {
+                    echo "</div>";
+                } else {
+                    echo "<span class='stars' id='doctor-region'>" . str_repeat("★", $doctors_rating) . str_repeat("☆", 5 - $doctors_rating) . "</span></div>";
+                }
+                ?>
+            </div>
+        </div>
+
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Свободни часове:</th>
+                </tr>
+                <tr>
+                    <th>Доктор</th>
+                    <th>Локация</th>
+                    <th>Дата и час</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            require_once 'DB.php';
+
+            $appointments = getFreeAppointmentsPerId($_GET['id']);
+
+            if (count($appointments) > 0) {
+                foreach ($appointments as $row) {
+                    echo "<tr>";
+                    echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
+                    echo "<td>" . $row["location"] . "</td>";
+                    echo "<td>" . $row["appointment_date"] . "</td>";
+                    echo "<td><button class='reviews-button'>Запази час</button></td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5'>Няма намерени часове.</td></tr>";
+            }
+            ?>
+            </tbody>
+        </table>
+
+    </div>
+</main>
+</body>
+</html>

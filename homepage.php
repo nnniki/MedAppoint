@@ -59,6 +59,9 @@ if(isset($_SESSION['username'])) {
         <table class="results-table" id="results">
             <thead>
                 <tr>
+                    <th>Резултати от търсенето:</th>
+                </tr>
+                <tr>
                     <th>Доктор</th>
                     <th>Специалност</th>
                     <th>Регион</th>
@@ -98,7 +101,7 @@ if(isset($_SESSION['username'])) {
                         } else {
                             echo "<td><span class='stars'>" . str_repeat("★", $doctors_rating) . str_repeat("☆", 5 - $doctors_rating) . "</span></td>";
                         }
-                        echo "<td><button class='reviews-button'>Виж профил</button></td>";
+                        echo "<td><a href='doctor_profile.php?id=". $row['id'] ."'> <button class='reviews-button'>Виж профил</button> </a></td>";
                         echo "</tr>";
                     }
                 } else {

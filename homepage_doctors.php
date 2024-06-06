@@ -16,9 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $location = $_POST['appointment_location'];
     $appointment_date = $_POST['appointment_date'];
     $appointment_time = $_POST['appointment_time'];
-    $dataTime = $appointment_date . ' ' . $appointment_time;
+    $dateTime = $appointment_date . ' ' . $appointment_time . ':00';
 
-    addNewAppointment($username, $location, $dataTime);
+    if (!addNewAppointment($username, $location, $dateTime)) {
+        $error = 'Вече имате добавен преглед в този час и дата.';
+    }
 }
 
 ?>
@@ -130,22 +132,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="form-group">
                 <label for="appointment_date">Дата:</label>
-                <input type="date" id="appointment_date" min="2024-06-04" name="appointment_date" required><br>
+                <input type="date" id="appointment_date" name="appointment_date" required>
+                <script>
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('appointment_date').setAttribute('min', today);
+                </script>
             </div>
 
             <div class="form-group">
                 <label for="appointment_time">Час:</label>
-                <input type="time" id="appointment_time" name="appointment_time" required><br>
+                <input type="time" id="appointment_time" min="07:00" max="21:00" name="appointment_time" required>
             </div>
 
             <div class="form-group">
                 <label for="appointment_location">Локация:</label>
-                <input type="text" id="appointment_location" name="appointment_location" required><br>
+                <input type="text" id="appointment_location" name="appointment_location" required>
             </div>
 
             <div class="form-group">
                 <input type="submit" value="Добави часа">
             </div>
+
+            <div class="error"> <?php if(isset($error)) { echo $error;}?> </div>
         </form>
     </div>
 
