@@ -172,6 +172,7 @@ function getReservedAppointmentsPerDoctor($username) {
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
+    date_default_timezone_set("Europe/Sofia");
     $currentDate = date('Y-m-d H:i:s');
     $stmt->bindParam(':date', $currentDate);
 
@@ -189,6 +190,7 @@ function getFreeAppointmentsPerDoctor($username) {
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
+    date_default_timezone_set("Europe/Sofia");
     $currentDate = date('Y-m-d H:i:s');
     $stmt->bindParam(':date', $currentDate);
 
@@ -246,6 +248,7 @@ function getFreeAppointmentsPerID($id) {
     WHERE doctor_id=$id AND patient_id IS NULL AND appointment_date >= :date";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
+    date_default_timezone_set("Europe/Sofia");
     $currentDate = date('Y-m-d H:i:s');
     $stmt->bindParam(':date', $currentDate);
 
@@ -268,4 +271,20 @@ function getReviewsPerId($id) {
     $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return $reviews;
+}
+
+function getReservedAppointmentsPerPatient($username) { 
+    $dataBase = new Db();
+    $sql = "SELECT doctors.first_name, doctors.last_name, review, rating, notes, location, appointment_date, appointments.id
+    FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
+    JOIN patients ON patients.id = appointments.patient_id
+    WHERE patients.username = :username";
+
+    $stmt =  $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':username', $username);
+  
+    $stmt->execute();
+    $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $appointments;
 }

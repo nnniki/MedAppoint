@@ -19,6 +19,7 @@ if(!isset($_SESSION['username'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedAppoint</title>
     <link rel="stylesheet" href="css/homepage.css">
+    <script src="addUserInput.js"></script>
 </head>
 <body>
 <header>
@@ -102,6 +103,75 @@ if(!isset($_SESSION['username'])) {
             }
         } else {
             echo "<tr><td colspan='5'>Няма намерени доктори.</td></tr>";
+        }
+        ?>
+        </tbody>
+    </table>
+
+    <table class="results-table" id="patient-appointmets">
+        <thead>
+        <tr>
+            <th>Резервирани часове:</th>
+        </tr>
+        <tr>
+            <th>Доктор</th>
+            <th>Ревю</th>
+            <th>Рейтинг</th>
+            <th>Бележки</th>
+            <th>Локация</th>
+            <th>Ден и час</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        require_once 'DB.php';
+
+        $appointments = getReservedAppointmentsPerPatient($_SESSION['username']);
+
+        if (count($appointments) > 0) {
+            foreach ($appointments as $row) {
+                echo "<tr>";
+                echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
+                date_default_timezone_set("Europe/Sofia");
+                $currentDate = date('Y-m-d H:i:s');
+
+                if (isset($row["review"])) {
+                    echo "<td>" . $row["review"] . "</td>";
+                } 
+                else if ($row['appointment_date'] > $currentDate) {
+                    echo "<td></td>";
+                } 
+                else {
+                    echo '<td id="review-container-' . $row['id'] . '" >
+                        <form class="review-form" onsubmit="addUserInput(event, ' . $row['id'] . ', \'review\')">
+                            <input type="text" class="review-input" id="review-input-' . $row['id'] . '" required>
+                            <button type="submit" class="review-button">Добави ревю</button>
+                        </form>
+                      </td>';
+                }
+
+                if (isset($row["rating"])) {
+                    echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
+                } 
+                else if ($row['appointment_date'] > $currentDate) {
+                    echo "<td></td>";
+                }  
+                else {
+                    echo '<td id="rating-container-' . $row['id'] . '" >
+                        <form class="rating-form" onsubmit="addUserInput(event, ' . $row['id'] . ', \'rating\')">
+                            <input type="text" class="rating-input" min=1 max=5 id="rating-input-' . $row['id'] . '" required>
+                            <button type="submit" class="rating-button">Добави оценка</button>
+                        </form>
+                      </td>';
+                }
+
+                echo "<td>" . $row["notes"] . "</td>";
+                echo "<td>" . $row["location"] . "</td>";
+                echo "<td>" . $row["appointment_date"] . "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='5'>Нямате резервирани часове.</td></tr>";
         }
         ?>
         </tbody>

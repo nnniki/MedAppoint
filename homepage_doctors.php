@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedAppoint</title>
     <link rel="stylesheet" href="css/homepage.css">
-    <script src="addNote.js"></script>
+    <script src="addUserInput.js"></script>
 </head>
 <body>
 <header>
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     echo "<td>" . $row["notes"] . "</td>";
                 } else {
                     echo '<td id="note-container-' . $row['id'] . '" >
-                        <form class="note-form" onsubmit="addNote(event, ' . $row['id'] . ')">
+                        <form class="note-form" onsubmit="addUserInput(event, ' . $row['id'] . ', \'note\')">
                             <input type="text" class="note-input" id="note-input-' . $row['id'] . '" required>
                             <button type="submit" class="note-button">Добави бележка</button>
                         </form>
