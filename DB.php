@@ -243,7 +243,7 @@ function validate_new_appointment($id, $dateTime) {
 
 function getFreeAppointmentsPerID($id) {
     $dataBase = new Db();
-    $sql = "SELECT first_name, last_name, review, rating, notes, location, appointment_date
+    $sql = "SELECT first_name, last_name, review, rating, notes, location, appointment_date, appointments.id
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
     WHERE doctor_id=$id AND patient_id IS NULL AND appointment_date >= :date";
 

@@ -15,6 +15,7 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedAppoint</title>
     <link rel="stylesheet" href="css/homepage.css">
+    <script src="reserve_appointment.js"></script>
 </head>
 <body>
 <header>
@@ -84,6 +85,12 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
             require_once 'DB.php';
 
             $appointments = getFreeAppointmentsPerId($_GET['id']);
+            $logged = 0;
+            $username = "";
+            if (isset($_SESSION['username'])) {
+                $logged = 1;
+                $username = $_SESSION['username'];
+            }
 
             if (count($appointments) > 0) {
                 foreach ($appointments as $row) {
@@ -91,7 +98,11 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
                     echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
                     echo "<td>" . $row["location"] . "</td>";
                     echo "<td>" . $row["appointment_date"] . "</td>";
-                    echo "<td><button class='reviews-button'>Запази час</button></td>";
+                    echo '<td id="reserve-appointment-container-' . $row['id'] . '" >
+                       
+                             <button class="reviews-button" onclick="reserveAppointment(event, ' . $logged . ', ' . $row['id'] . ' , \'' . $username . '\')">Запази час</button>
+                       
+                      </td>';
                     echo "</tr>";
                 }
             } else {
