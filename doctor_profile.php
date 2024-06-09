@@ -1,14 +1,10 @@
 <?php
 session_start();
 
-//if(!isset($_SESSION['username'])) {
-//    header('Location: homepage.php');
-//    exit;
-//} else if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
-//    header('Location: homepage_doctors.php');
-//    exit;
-//}
-
+if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
+   header('Location: homepage_doctors.php');
+   exit;
+}
 ?>
 
 
@@ -23,9 +19,20 @@ session_start();
 <body>
 <header>
     <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
-<!--    <div class="container-buttons">-->
-<!--        <a href="logout.php"> <button class="user-buttons">Излизане</button> </a>-->
-<!--    </div>-->
+    <?php
+        if(isset($_SESSION['username'])) {
+            echo "<div class='container-buttons'>
+                <a href='logout.php'> <button class='user-buttons'>Излизане</button> </a>
+                </div>";
+        }
+        else {
+            echo "<div class='container-buttons'>
+            <a href='registration_patient.php'> <button class='user-buttons'>Регистрация за пациент</button> </a>
+            <a href='login_patients.php'><button class='user-buttons'>Вход за пациент</button></a>";
+        }
+
+    ?>
+
 </header>
 
 <main>
@@ -93,8 +100,44 @@ session_start();
             ?>
             </tbody>
         </table>
-
     </div>
+
+    <table class="results-table" id = "reviews">
+            <thead>
+                <tr>
+                    <th>Отзиви</th>
+                </tr>
+                <tr>
+                    <th>Пациент</th>
+                    <th>Ревю</th>
+                    <th>Оценка</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            require_once 'DB.php';
+
+            $reviews = getReviewsPerId($_GET['id']);
+
+            if (count($reviews) > 0) {
+                foreach ($reviews as $row) {
+                    echo "<tr>";
+                    echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
+                    echo "<td>" . $row["review"] . "</td>";
+                    if (!isset($row["rating"])) {
+                        echo "<td></td>";
+                    } else {
+                        echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
+                    }
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5'>Няма отизиви за дадения специалист.</td></tr>";
+            }
+            ?>
+            </tbody>
+        </table>
+
 </main>
 </body>
 </html>

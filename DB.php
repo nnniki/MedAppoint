@@ -168,10 +168,12 @@ function getReservedAppointmentsPerDoctor($username) {
     $sql = "SELECT doctors.username, patients.first_name, patients.last_name, review, rating, notes, location, appointment_date, appointments.id
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
     JOIN patients ON patients.id = appointments.patient_id
-    WHERE doctors.username = :username";
+    WHERE doctors.username = :username AND appointment_date >= :date";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
+    $currentDate = date('Y-m-d H:i:s');
+    $stmt->bindParam(':date', $currentDate);
 
     $stmt->execute();
     $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -183,10 +185,12 @@ function getFreeAppointmentsPerDoctor($username) {
     $dataBase = new Db();
     $sql = "SELECT doctors.username, location, appointment_date
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
-    WHERE doctors.username = :username AND patient_id IS NULL";
+    WHERE doctors.username = :username AND patient_id IS NULL AND appointment_date >= :date";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
+    $currentDate = date('Y-m-d H:i:s');
+    $stmt->bindParam(':date', $currentDate);
 
     $stmt->execute();
     $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -239,12 +243,29 @@ function getFreeAppointmentsPerID($id) {
     $dataBase = new Db();
     $sql = "SELECT first_name, last_name, review, rating, notes, location, appointment_date
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
-    WHERE doctor_id=$id AND patient_id IS NULL";
+    WHERE doctor_id=$id AND patient_id IS NULL AND appointment_date >= :date";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
+    $currentDate = date('Y-m-d H:i:s');
+    $stmt->bindParam(':date', $currentDate);
 
     $stmt->execute();
     $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return $appointments;
+}
+
+function getReviewsPerId($id) {
+    $dataBase = new Db();
+    $sql = "SELECT first_name, last_name, review, rating
+            FROM appointments JOIN patients ON patient_id = patients.id
+            WHERE doctor_id = :id AND (review IS NOT NULL OR rating IS NOT NULL)";
+
+    $stmt =  $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':id', $id);
+
+    $stmt->execute();
+    $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $reviews;
 }
