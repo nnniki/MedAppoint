@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':id', $appointment_id);
 
     $stmt->execute();
+    echo $note;
     return $note;
 }
 ?>

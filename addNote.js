@@ -14,7 +14,7 @@ function addNote(event, appointmentId) {
         })
         .then(noteResponse => noteResponse.text())
         .then(text => {
-            document.getElementById(`note-container-${appointmentId}`).innerText = text;
+            document.getElementById(`note-container-${appointmentId}`).innerHTML = `${text}`;
         })
        
     } catch (error) {

@@ -5,28 +5,28 @@ class Db
 
     public function __construct()
     {
-//      $dbhost = "localhost";
-//      $port = 3307;
-//      $dbName = "medappoint";
-//      $userName = "root";
-//      $userPassword = "";
-//
-//      $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
-//          [
-//              PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-//              PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-//          ]);
+     $dbhost = "localhost";
+     $port = 3307;
+     $dbName = "medappoint";
+     $userName = "root";
+     $userPassword = "";
 
-          $dbhost = "mysql";
-          $dbName = "medappoint";
-          $userName = "root";
-          $userPassword = "root";
+     $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
+         [
+             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+         ]);
 
-          $this->connection = new PDO("mysql:host=$dbhost;dbname=$dbName", $userName, $userPassword,
-              [
-                  PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-                  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-              ]);
+        //   $dbhost = "mysql";
+        //   $dbName = "medappoint";
+        //   $userName = "root";
+        //   $userPassword = "root";
+
+        //   $this->connection = new PDO("mysql:host=$dbhost;dbname=$dbName", $userName, $userPassword,
+        //       [
+        //           PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+        //           PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        //       ]);
     }
 
     public function getConnection()
@@ -239,7 +239,7 @@ function getFreeAppointmentsPerID($id) {
     $dataBase = new Db();
     $sql = "SELECT first_name, last_name, review, rating, notes, location, appointment_date
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
-    WHERE doctor_id=$id";
+    WHERE doctor_id=$id AND patient_id IS NULL";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
 
