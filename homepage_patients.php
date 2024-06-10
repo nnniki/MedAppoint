@@ -148,7 +148,7 @@ if(!isset($_SESSION['username'])) {
                 if (isset($row["review"])) {
                     echo "<td>" . $row["review"] . "</td>";
                 } 
-                else if ($row['appointment_date'] < $currentDate) {
+                else if ($row['appointment_date'] > $currentDate) {
                     echo "<td></td>";
                 } 
                 else {
@@ -163,7 +163,7 @@ if(!isset($_SESSION['username'])) {
                 if (isset($row["rating"])) {
                     echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
                 } 
-                else if ($row['appointment_date'] < $currentDate) {
+                else if ($row['appointment_date'] > $currentDate) {
                     echo "<td></td>";
                 }  
                 else {
