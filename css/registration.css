@@ -16,7 +16,7 @@ body {
     width: 400px;
 }
 
-.container-form{
+.container-form {
     column-count: 2;
     column-gap: 20px;
 }

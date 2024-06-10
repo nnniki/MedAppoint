@@ -11,8 +11,15 @@ button {
 header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background-color: #BFE7F9;
     padding: 10px 20px;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 #container-logo {
@@ -25,6 +32,18 @@ header {
 #container-logo img {
     width: 70px;
     height: 70px;
+}
+
+.user-info-1 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.user-info-2 {
+    font-size: 14px;
+    width: max-content;
+    margin: 0;
 }
 
 .container-buttons {
@@ -65,7 +84,7 @@ header {
 }
 
 .search-bar input {
-    width: 50%;
+    width: 40%;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #ccc;
@@ -80,7 +99,7 @@ header {
     border-radius: 10px;
 }
 
-.search-button, .reviews-button {
+.search-button, .reviews-button, .note-button, .review-button, .rating-button {
     background-color: #41CC46;
     color: white;
     border: none;
@@ -89,7 +108,7 @@ header {
     border-radius: 10px;
 }
 
-.search-button:hover, .reviews-button:hover {
+.search-button:hover, .reviews-button:hover, .note-button:hover, .review-button:hover, .rating-button:hover {
     background-color: #ccc;
     color: black
 }
@@ -104,14 +123,6 @@ header {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#reserved, #results, #reviews, #patient-appointmets {
-    width: 80%;
-}
-
-#free {
-    width: 400px;
-}
-
 .results-table th, .results-table td {
     padding: 8px;
     text-align: left;
@@ -122,9 +133,8 @@ header {
     color: black;
 }
 
-.container-form{
-    display: flex;
-    justify-content: center;
+.container-form {
+    width: 40%;
 }
 
 .appointment-form, .doctor-card {
@@ -133,7 +143,6 @@ header {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
 }
 
 .appointment-form h2, .doctor-card h2 {
@@ -155,7 +164,7 @@ header {
     padding: 10px;
     border: none;
     border-radius: 10px;
-    background-color: #20A0D8;
+    background-color: #41CC46;
     color: white;
     font-size: 16px;
     cursor: pointer;
@@ -183,8 +192,42 @@ header {
     gap: 10px;
 }
 
+.reserve-button {
+    width: 20%;
+}
+
+.note-form, .review-form, .rating-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.note-input, .review-input, .rating-input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
 .error {
     color: red;
     margin-bottom: 5px;
     font-size: 16px;
+}
+
+#reviews {
+    width: 100%;
+}
+
+#reserved, #results, #patient-appointments {
+    width: 80%;
+}
+
+#free-doctor {
+    width: 60%;
+}
+
+#free, .doctor-information {
+    width: 50%;
 }

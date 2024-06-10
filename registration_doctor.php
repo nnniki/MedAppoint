@@ -152,7 +152,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="error"> <?php if(isset($errors["phone_number"])) { echo 'Тел. номер е невалиден.';}?> </div>
 
         <div class="form-group">
-            <label for="address">Адрес:</label>
+            <label for="address">Работен адрес:</label>
             <input type="text" id="address" name="address" required value="<?php echo isset($_POST['address']) ? $_POST['address'] : ''; ?>">
         </div>
 

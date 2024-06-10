@@ -36,7 +36,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 <header>
-    <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+    <div class="left">
+        <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+        <?php
+        require_once 'DB.php';
+        $patient = getDoctorInformationPerUsername($_SESSION['username']);
+        echo '<div>
+            <p class="user-info-1">' . $_SESSION['username'] . '</p>
+            <p class="user-info-2">' . $patient["first_name"] . ' ' . $patient["last_name"] . '</p>
+          </div>';
+        ?>
+    </div>
     <div class="container-buttons">
             <a href="logout.php"> <button class="user-buttons">Излизане</button> </a>
     </div>
@@ -79,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     echo '<td id="note-container-' . $row['id'] . '" >
                         <form class="note-form" onsubmit="addUserInput(event, ' . $row['id'] . ', \'note\')">
                             <input type="text" class="note-input" id="note-input-' . $row['id'] . '" required>
-                            <button type="submit" class="note-button">Добави бележка</button>
+                            <button type="submit" class="note-button">Запази</button>
                         </form>
                       </td>';
                 }
@@ -88,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='5'>Няма намерени часове.</td></tr>";
+            echo "<tr><td colspan='6'>Няма намерени часове.</td></tr>";
         }
         ?>
         </tbody>
@@ -96,66 +106,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="container-appointments">
 
-    <table class="results-table" id="free">
-        <thead>
-        <tr>
-            <th>Свободни часове:</th>
-        </tr>
-        <tr>
-            <th>Локация</th>
-            <th>Ден и час</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        require_once 'DB.php';
+        <div class="container-form">
+            <form class="appointment-form" action="./homepage_doctors.php" method="POST">
 
-        $appointments = getFreeAppointmentsPerDoctor($_SESSION['username']);
+                <h2>Добави час за преглед</h2>
 
-        if (count($appointments) > 0) {
-            foreach ($appointments as $row) {
-                echo "<td>" . $row["location"] . "</td>";
-                echo "<td>" . $row["appointment_date"] . "</td>";
-                echo "</tr>";
+                <div class="form-group">
+                    <label for="appointment_date">Дата:</label>
+                    <input type="date" id="appointment_date" name="appointment_date" required>
+                    <script>
+                        const today = new Date().toISOString().split('T')[0];
+                        document.getElementById('appointment_date').setAttribute('min', today);
+                    </script>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointment_time">Час:</label>
+                    <input type="time" id="appointment_time" min="07:00" max="21:00" name="appointment_time" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointment_location">Локация:</label>
+                    <input type="text" id="appointment_location" name="appointment_location" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Добави часа">
+                </div>
+
+                <div class="error"> <?php if(isset($error)) { echo $error;}?> </div>
+            </form>
+        </div>
+
+        <table class="results-table" id="free-doctor">
+            <thead>
+            <tr>
+                <th>Свободни часове:</th>
+            </tr>
+            <tr>
+                <th>Локация</th>
+                <th>Ден и час</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            require_once 'DB.php';
+
+            $appointments = getFreeAppointmentsPerDoctor($_SESSION['username']);
+
+            if (count($appointments) > 0) {
+                foreach ($appointments as $row) {
+                    echo "<td>" . $row["location"] . "</td>";
+                    echo "<td>" . $row["appointment_date"] . "</td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='2'>Няма намерени часове.</td></tr>";
             }
-        } else {
-            echo "<tr><td colspan='5'>Няма намерени часове.</td></tr>";
-        }
-        ?>
-        </tbody>
-    </table>
-
-    <div class="container-form">
-        <form class="appointment-form" action="./homepage_doctors.php" method="POST">
-
-            <h2>Добави час за преглед</h2>
-
-            <div class="form-group">
-                <label for="appointment_date">Дата:</label>
-                <input type="date" id="appointment_date" name="appointment_date" required>
-                <script>
-                    const today = new Date().toISOString().split('T')[0];
-                    document.getElementById('appointment_date').setAttribute('min', today);
-                </script>
-            </div>
-
-            <div class="form-group">
-                <label for="appointment_time">Час:</label>
-                <input type="time" id="appointment_time" min="07:00" max="21:00" name="appointment_time" required>
-            </div>
-
-            <div class="form-group">
-                <label for="appointment_location">Локация:</label>
-                <input type="text" id="appointment_location" name="appointment_location" required>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Добави часа">
-            </div>
-
-            <div class="error"> <?php if(isset($error)) { echo $error;}?> </div>
-        </form>
-    </div>
+            ?>
+            </tbody>
+        </table>
 
     </div>
 </main>

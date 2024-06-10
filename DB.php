@@ -5,28 +5,28 @@ class Db
 
     public function __construct()
     {
-     $dbhost = "localhost";
-     $port = 3307;
-     $dbName = "medappoint";
-     $userName = "root";
-     $userPassword = "";
+//     $dbhost = "localhost";
+//     $port = 3307;
+//     $dbName = "medappoint";
+//     $userName = "root";
+//     $userPassword = "";
+//
+//     $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
+//         [
+//             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+//             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+//         ]);
 
-     $this->connection = new PDO("mysql:host=$dbhost;port=$port;dbname=$dbName", $userName, $userPassword,
-         [
-             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-         ]);
+           $dbhost = "mysql";
+           $dbName = "medappoint";
+           $userName = "root";
+           $userPassword = "root";
 
-        //   $dbhost = "mysql";
-        //   $dbName = "medappoint";
-        //   $userName = "root";
-        //   $userPassword = "root";
-
-        //   $this->connection = new PDO("mysql:host=$dbhost;dbname=$dbName", $userName, $userPassword,
-        //       [
-        //           PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-        //           PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        //       ]);
+           $this->connection = new PDO("mysql:host=$dbhost;dbname=$dbName", $userName, $userPassword,
+               [
+                   PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+                   PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+               ]);
     }
 
     public function getConnection()
@@ -136,11 +136,39 @@ function getDoctorsInformation($searchName, $searchRegion, $searchSpeciality) {
     return $doctors;
 }
 
+function getPatientInformation($username) {
+    $dataBase = new Db();
+    $sql = "SELECT first_name, last_name FROM patients WHERE username = :username";
+
+    $stmt =  $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':username', $username);
+
+    $stmt->execute();
+    $patient = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $patient;
+}
+
+function getDoctorInformationPerUsername($username) {
+    $dataBase = new Db();
+    $sql = "SELECT first_name, last_name FROM doctors WHERE username = :username";
+
+    $stmt =  $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':username', $username);
+
+    $stmt->execute();
+    $patient = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $patient;
+}
+
 function getDoctorInformation($id) {
     $dataBase = new Db();
-    $sql = "SELECT first_name, last_name, speciality, region FROM doctors WHERE id=$id";
+    $sql = "SELECT first_name, last_name, speciality, work_address, region FROM doctors WHERE id=:id";
 
     $stmt = $dataBase->getConnection()->prepare($sql);
+    $stmt->bindParam(':id', $id);
+
     $stmt->execute();
     $doctor = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -157,8 +185,13 @@ function getAverageRatingPerDoctor($id) {
     $stmt->bindParam(':id', $id);
 
     $stmt->execute();
+
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $rating = $result['rating'];
+
+    if ($rating === NULL) {
+        $rating = 1;
+    }
 
     return round($rating);
 }
@@ -168,7 +201,8 @@ function getReservedAppointmentsPerDoctor($username) {
     $sql = "SELECT doctors.username, patients.first_name, patients.last_name, review, rating, notes, location, appointment_date, appointments.id
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
     JOIN patients ON patients.id = appointments.patient_id
-    WHERE doctors.username = :username AND appointment_date >= :date";
+    WHERE doctors.username = :username AND appointment_date >= :date
+    ORDER BY appointment_date DESC";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
@@ -186,7 +220,8 @@ function getFreeAppointmentsPerDoctor($username) {
     $dataBase = new Db();
     $sql = "SELECT doctors.username, location, appointment_date
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
-    WHERE doctors.username = :username AND patient_id IS NULL AND appointment_date >= :date";
+    WHERE doctors.username = :username AND patient_id IS NULL AND appointment_date >= :date
+    ORDER BY appointment_date DESC";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
@@ -245,7 +280,8 @@ function getFreeAppointmentsPerID($id) {
     $dataBase = new Db();
     $sql = "SELECT first_name, last_name, review, rating, notes, location, appointment_date, appointments.id
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
-    WHERE doctor_id=$id AND patient_id IS NULL AND appointment_date >= :date";
+    WHERE doctor_id=$id AND patient_id IS NULL AND appointment_date >= :date
+    ORDER BY appointment_date DESC";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     date_default_timezone_set("Europe/Sofia");
@@ -262,7 +298,8 @@ function getReviewsPerId($id) {
     $dataBase = new Db();
     $sql = "SELECT first_name, last_name, review, rating
             FROM appointments JOIN patients ON patient_id = patients.id
-            WHERE doctor_id = :id AND (review IS NOT NULL OR rating IS NOT NULL)";
+            WHERE doctor_id = :id AND (review IS NOT NULL OR rating IS NOT NULL)
+            ORDER BY appointment_date DESC";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':id', $id);
@@ -278,7 +315,8 @@ function getReservedAppointmentsPerPatient($username) {
     $sql = "SELECT doctors.first_name, doctors.last_name, review, rating, notes, location, appointment_date, appointments.id
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
     JOIN patients ON patients.id = appointments.patient_id
-    WHERE patients.username = :username";
+    WHERE patients.username = :username
+    ORDER BY appointment_date DESC";
 
     $stmt =  $dataBase->getConnection()->prepare($sql);
     $stmt->bindParam(':username', $username);
