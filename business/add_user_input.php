@@ -1,5 +1,5 @@
 <?php
-require 'DB.php';
+require '../data/DB.php';
 global $conn;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

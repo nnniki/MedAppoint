@@ -2,4 +2,4 @@
 
 session_start();
 
-header('Location: homepage.php');
+header('Location: presentation/views/homepage.php');

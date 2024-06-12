@@ -1,6 +1,7 @@
 <?php
 
-require_once 'DB.php';
+require_once '../../business/RegistrationLoginController.php';
+
 session_start();
 
 if(isset($_SESSION['username'])) {
@@ -101,13 +102,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Doctor Registration Form</title>
-    <link rel="stylesheet" type="text/css" href="./css/registration.css">
+    <link rel="stylesheet" type="text/css" href="../css/registration.css">
 </head>
 <body>
     <form class="registration-form" action="./registration_doctor.php" method="POST">
     <div class="container-form">
 
-        <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+        <div id="container-logo"><img src="../images/icon.png" alt="Image is unavailable"></div>
 
         <h2>Регистрация</h2>
 

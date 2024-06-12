@@ -18,16 +18,17 @@ if(!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedAppoint</title>
-    <link rel="stylesheet" href="css/homepage.css">
-    <script src="addUserInput.js"></script>
+    <link rel="stylesheet" href="../css/homepage.css">
+    <script src="../js/add_user_input.js"></script>
 </head>
 <body>
 <header>
     <div class="left">
-    <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+    <div id="container-logo"><img src="../images/icon.png" alt="Image is unavailable"></div>
     <?php
-    require_once 'DB.php';
-    $patient = getPatientInformation($_SESSION['username']);
+    require_once '../../business/GuestPatientController.php';
+
+    $patient = getPatientInformationForHeader($_SESSION['username']);
     echo '<div>
             <p class="user-info-1">' . $_SESSION['username'] . '</p>
             <p class="user-info-2">' . $patient["first_name"] . ' ' . $patient["last_name"] . '</p>
@@ -78,42 +79,43 @@ if(!isset($_SESSION['username'])) {
         </thead>
         <tbody>
         <?php
-        require_once 'DB.php';
-        $searchName = "";
-        $searchRegion = "";
-        $searchSpeciality = "";
+            require_once '../../business/GuestPatientController.php';
 
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            if (isset($_GET['name'])) {
-                $searchName = $_GET['name'];
-            }
-            if (isset($_GET['speciality'])) {
-                $searchSpeciality = $_GET['speciality'];
-            }
-            if (isset($_GET['region'])) {
-                $searchRegion = $_GET['region'];
-            }
-        }
-        $doctors = getDoctorsInformation($searchName, $searchRegion, $searchSpeciality);
+            $searchName = "";
+            $searchRegion = "";
+            $searchSpeciality = "";
 
-        if (count($doctors) > 0) {
-            foreach ($doctors as $row) {
-                echo "<tr>";
-                echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
-                echo "<td>" . $row["speciality"] . "</td>";
-                echo "<td>" . $row["region"] . "</td>";
-                $doctors_rating = getAverageRatingPerDoctor($row['id']);
-                if (!isset($doctors_rating)) {
-                    echo "<td></td>";
-                } else {
-                    echo "<td><span class='stars'>" . str_repeat("★", $doctors_rating) . str_repeat("☆", 5 - $doctors_rating) . "</span></td>";
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                if (isset($_GET['name'])) {
+                    $searchName = $_GET['name'];
                 }
-                echo "<td><a href='doctor_profile.php?id=". $row['id'] ."'> <button class='reviews-button'>Запази час</button> </a></td>";
-                echo "</tr>";
+                if (isset($_GET['speciality'])) {
+                    $searchSpeciality = $_GET['speciality'];
+                }
+                if (isset($_GET['region'])) {
+                    $searchRegion = $_GET['region'];
+                }
             }
-        } else {
-            echo "<tr><td colspan='5'>Няма намерени доктори.</td></tr>";
-        }
+            $doctors = getSearchedDoctorsInformation($searchName, $searchRegion, $searchSpeciality);
+
+            if (count($doctors) > 0) {
+                foreach ($doctors as $row) {
+                    echo "<tr>";
+                    echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
+                    echo "<td>" . $row["speciality"] . "</td>";
+                    echo "<td>" . $row["region"] . "</td>";
+                    $doctors_rating = getAverageRatingPerDoctor($row['id']);
+                    if (!isset($doctors_rating)) {
+                        echo "<td></td>";
+                    } else {
+                        echo "<td><span class='stars'>" . str_repeat("★", $doctors_rating) . str_repeat("☆", 5 - $doctors_rating) . "</span></td>";
+                    }
+                    echo "<td><a href='doctor_profile.php?id=". $row['id'] ."'> <button class='reviews-button'>Запази час</button> </a></td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5'>Няма намерени доктори.</td></tr>";
+            }
         ?>
         </tbody>
     </table>
@@ -134,7 +136,7 @@ if(!isset($_SESSION['username'])) {
         </thead>
         <tbody>
         <?php
-        require_once 'DB.php';
+        require_once '../../business/GuestPatientController.php';
 
         $appointments = getReservedAppointmentsPerPatient($_SESSION['username']);
 

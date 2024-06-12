@@ -9,7 +9,7 @@ if(!isset($_SESSION['username'])) {
     exit;
 }
 
-require 'DB.php';
+require_once '../../business/DoctorController.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_SESSION['username'];
@@ -31,16 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedAppoint</title>
-    <link rel="stylesheet" href="css/homepage.css">
-    <script src="addUserInput.js"></script>
+    <link rel="stylesheet" href="../css/homepage.css">
+    <script src="../js/add_user_input.js"></script>
 </head>
 <body>
 <header>
     <div class="left">
-        <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+        <div id="container-logo"><img src="../images/icon.png" alt="Image is unavailable"></div>
         <?php
-        require_once 'DB.php';
-        $patient = getDoctorInformationPerUsername($_SESSION['username']);
+        require_once '../../business/DoctorController.php';
+        $patient = getDoctorInformationPerUsernameForHeader($_SESSION['username']);
         echo '<div>
             <p class="user-info-1">' . $_SESSION['username'] . '</p>
             <p class="user-info-2">' . $patient["first_name"] . ' ' . $patient["last_name"] . '</p>
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </thead>
         <tbody>
         <?php
-        require_once 'DB.php';
+        require_once '../../business/DoctorController.php';
 
         $appointments = getReservedAppointmentsPerDoctor($_SESSION['username']);
 
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </thead>
             <tbody>
             <?php
-            require_once 'DB.php';
+            require_once '../../business/DoctorController.php';
 
             $appointments = getFreeAppointmentsPerDoctor($_SESSION['username']);
 

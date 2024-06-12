@@ -19,11 +19,11 @@ if(isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedAppoint</title>
-    <link rel="stylesheet" href="css/homepage.css">
+    <link rel="stylesheet" href="../css/homepage.css">
 </head>
 <body>
     <header>
-        <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+        <div id="container-logo"><img src="../images/icon.png" alt="Image is unavailable"></div>
         <div class="container-buttons">
             <a href="registration_patient.php"> <button class="user-buttons">Регистрация за пациент</button> </a>
             <a href="login_patients.php"><button class="user-buttons">Вход за пациент</button></a>
@@ -71,7 +71,8 @@ if(isset($_SESSION['username'])) {
             </thead>
             <tbody>
             <?php
-                require_once 'DB.php';
+                require_once '../../business/GuestPatientController.php';
+
                 $searchName = "";
                 $searchRegion = "";
                 $searchSpeciality = "";
@@ -87,7 +88,7 @@ if(isset($_SESSION['username'])) {
                         $searchRegion = $_GET['region'];
                     }
                 }
-                $doctors = getDoctorsInformation($searchName, $searchRegion, $searchSpeciality);
+                $doctors = getSearchedDoctorsInformation($searchName, $searchRegion, $searchSpeciality);
 
                 if (count($doctors) > 0) {
                     foreach ($doctors as $row) {

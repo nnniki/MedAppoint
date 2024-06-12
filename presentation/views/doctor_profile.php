@@ -14,17 +14,18 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedAppoint</title>
-    <link rel="stylesheet" href="css/homepage.css">
-    <script src="reserve_appointment.js"></script>
+    <link rel="stylesheet" href="../css/homepage.css">
+    <script src="../js/reserve_appointment.js"></script>
 </head>
 <body>
 <header>
     <div class="left">
-        <div id="container-logo"><img src="./images/icon.png" alt="Image is unavailable"></div>
+        <div id="container-logo"><img src="../images/icon.png" alt="Image is unavailable"></div>
         <?php
+        require_once '../../business/GuestPatientController.php';
+
         if(isset($_SESSION['username'])) {
-            require_once 'DB.php';
-            $patient = getPatientInformation($_SESSION['username']);
+            $patient = getPatientInformationForHeader($_SESSION['username']);
             echo '<div>
                     <p class="user-info-1">' . $_SESSION['username'] . '</p>
                     <p class="user-info-2">' . $patient["first_name"] . ' ' . $patient["last_name"] . '</p>
@@ -59,8 +60,9 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
                 <h2>Информация за доктора</h2>
                 <div class="doctor-info">
                     <?php
-                    require_once 'DB.php';
-                    $doctor = getDoctorInformation($_GET['id']);
+                    require_once '../../business/GuestPatientController.php';
+
+                    $doctor = getDoctorInformationForCardPerID($_GET['id']);
 
                     echo "<div class='info-item'>
                             <label>Име:</label>
@@ -102,7 +104,7 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
                 </thead>
                 <tbody>
                 <?php
-                require_once 'DB.php';
+                require_once '../../business/GuestPatientController.php';
 
                 $reviews = getReviewsPerId($_GET['id']);
 
@@ -139,9 +141,9 @@ if(isset($_SESSION['username']) && $_SESSION['role'] === "doctor") {
             </thead>
             <tbody>
             <?php
-            require_once 'DB.php';
+            require_once '../../business/GuestPatientController.php';
 
-            $appointments = getFreeAppointmentsPerId($_GET['id']);
+            $appointments = getFreeAppointmentsPerIdForDoctorProfile($_GET['id']);
             $logged = 0;
             $username = "";
             if (isset($_SESSION['username'])) {
