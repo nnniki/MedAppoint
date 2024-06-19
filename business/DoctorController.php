@@ -49,7 +49,7 @@ function saveNote($appointment_id, $note) {
 
 function getFreeAppointmentsPerDoctor($username) {
     $dataBase = new Db();
-    $sql = "SELECT doctors.username, location, appointment_date
+    $sql = "SELECT doctors.username, location, appointment_date, appointments.id
     FROM doctors JOIN appointments ON doctors.id = appointments.doctor_id
     WHERE doctors.username = :username AND patient_id IS NULL AND appointment_date >= :date
     ORDER BY appointment_date DESC";

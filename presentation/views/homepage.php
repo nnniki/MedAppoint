@@ -3,9 +3,9 @@ session_start();
 
 
 if(isset($_SESSION['username'])) {
-    if($_SESSION['role'] === "doctor") {
+    if(isset($_SESSION['role']) && $_SESSION['role'] === "doctor") {
         header('Location: homepage_doctors.php');
-    } else if ($_SESSION['role'] === "patient") {
+    } else if (isset($_SESSION['role']) && $_SESSION['role'] === "patient") {
         header('Location: homepage_patients.php');
     }
 

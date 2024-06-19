@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>MedAppoint</title>
     <link rel="stylesheet" href="../css/homepage.css">
     <script src="../js/add_user_input.js"></script>
+    <script src="../js/cancel_appointment.js"></script>
 </head>
 <body>
 <header>
@@ -60,11 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </tr>
         <tr>
             <th>Пациент</th>
-            <th>Ревю</th>
-            <th>Рейтинг</th>
-            <th>Бележки</th>
             <th>Локация</th>
             <th>Ден и час</th>
+            <th>Бележки</th>
+            <th>Ревю</th>
+            <th>Рейтинг</th>
         </tr>
         </thead>
         <tbody>
@@ -75,14 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (count($appointments) > 0) {
             foreach ($appointments as $row) {
+                date_default_timezone_set("Europe/Sofia");
+                $current_date = date('Y-m-d H:i:s');
+
                 echo "<tr>";
                 echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
-                echo "<td>" . $row["review"] . "</td>";
-                if (!isset($row["rating"])) {
-                    echo "<td></td>";
-                } else {
-                    echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
-                }
+                echo "<td>" . $row["location"] . "</td>";
+                echo "<td>" . $row["appointment_date"] . "</td>";
+
                 if (isset($row["notes"])) {
                     echo "<td>" . $row["notes"] . "</td>";
                 } else {
@@ -93,12 +94,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </form>
                       </td>';
                 }
-                echo "<td>" . $row["location"] . "</td>";
-                echo "<td>" . $row["appointment_date"] . "</td>";
+
+                echo "<td>" . $row["review"] . "</td>";
+                if (!isset($row["rating"])) {
+                    echo "<td></td>";
+                } else {
+                    echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
+                }
+                
+                if ($row['appointment_date'] > $current_date) {
+                    echo '<td class="reserve-button" id="cancel-appointment-container-' . $row['id'] . '" >
+                    <button class="reviews-button" onclick="cancelAppointment(event, ' . $row['id'] . ', \'delete\')">Откажи час</button>
+                    </td>';
+                }
+
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='6'>Няма намерени часове.</td></tr>";
+            echo "<tr><td colspan='7'>Няма намерени часове.</td></tr>";
         }
         ?>
         </tbody>
@@ -156,12 +169,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (count($appointments) > 0) {
                 foreach ($appointments as $row) {
+                    echo "<tr>";
                     echo "<td>" . $row["location"] . "</td>";
                     echo "<td>" . $row["appointment_date"] . "</td>";
+                    echo '<td class="cancel-button" id="cancel-appointment-container-' . $row['id'] . '" >
+                             <button class="reviews-button" onclick="cancelAppointment(event, ' . $row['id'] . ', \'delete\')">Откажи час</button>
+                      </td>';
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='2'>Няма намерени часове.</td></tr>";
+                echo "<tr><td colspan='3'>Няма намерени часове.</td></tr>";
             }
             ?>
             </tbody>

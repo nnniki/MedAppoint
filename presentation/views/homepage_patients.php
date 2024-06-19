@@ -20,6 +20,7 @@ if(!isset($_SESSION['username'])) {
     <title>MedAppoint</title>
     <link rel="stylesheet" href="../css/homepage.css">
     <script src="../js/add_user_input.js"></script>
+    <script src="../js/cancel_appointment.js"></script>
 </head>
 <body>
 <header>
@@ -127,11 +128,11 @@ if(!isset($_SESSION['username'])) {
         </tr>
         <tr>
             <th>Доктор</th>
-            <th>Ревю</th>
-            <th>Рейтинг</th>
-            <th>Бележки</th>
             <th>Локация</th>
             <th>Ден и час</th>
+            <th>Бележки</th>
+            <th>Ревю</th>
+            <th>Оценка</th>
         </tr>
         </thead>
         <tbody>
@@ -146,6 +147,10 @@ if(!isset($_SESSION['username'])) {
                 echo "<td>" . $row["first_name"] . " " . $row["last_name"] . "</td>";
                 date_default_timezone_set("Europe/Sofia");
                 $currentDate = date('Y-m-d H:i:s');
+
+                echo "<td>" . $row["location"] . "</td>";
+                echo "<td>" . $row["appointment_date"] . "</td>";
+                echo "<td>" . $row["notes"] . "</td>";
 
                 if (isset($row["review"])) {
                     echo "<td>" . $row["review"] . "</td>";
@@ -166,7 +171,9 @@ if(!isset($_SESSION['username'])) {
                     echo "<td><span class='stars'>" . str_repeat("★", $row["rating"]) . str_repeat("☆", 5 - $row["rating"]) . "</span></td>";
                 } 
                 else if ($row['appointment_date'] > $currentDate) {
-                    echo "<td></td>";
+                    echo '<td class="reserve-button" id="cancel-appointment-container-' . $row['id'] . '" >
+                         <button class="reviews-button" onclick="cancelAppointment(event, ' . $row['id'] . ', \'update\')">Откажи час</button>
+                    </td>';
                 }  
                 else {
                     echo '<td id="rating-container-' . $row['id'] . '" >
@@ -176,10 +183,7 @@ if(!isset($_SESSION['username'])) {
                         </form>
                       </td>';
                 }
-
-                echo "<td>" . $row["notes"] . "</td>";
-                echo "<td>" . $row["location"] . "</td>";
-                echo "<td>" . $row["appointment_date"] . "</td>";
+               
                 echo "</tr>";
             }
         } else {
